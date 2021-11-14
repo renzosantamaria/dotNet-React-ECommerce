@@ -1,30 +1,22 @@
-import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
-import React from "react";
+
+import React, { useEffect, useState } from "react";
 
 import { IProduct } from "../../app/models/products";
+import ProductList from "./ProductList";
 
-interface IProps {
-  products: IProduct[];
-  addProducts: () => void;
-}
+const Catalog: React.FC = () => {
 
-const Catalog: React.FC<IProps> = ({ products, addProducts }) => {
+    const [products, setProducts] = useState<IProduct[]>([])
+
+    useEffect(() => {
+      fetch('http://localhost:5000/api/products')
+        .then(response => response.json())
+        .then(data => setProducts(data))
+    }, [])
+  
   return (
     <>
-      <h1>Catalog</h1>
-      <List>
-        {products.map((product) => {
-          return (
-            <ListItem key={product.id}>
-              <ListItemAvatar>
-                  <Avatar src={product.pictureUrl}></Avatar>
-              </ListItemAvatar>
-              <ListItemText> {product.name} - {product.price} </ListItemText>
-            </ListItem>
-          );
-        })}
-      </List>
-      <Button variant="contained" onClick={addProducts} >Add product</Button>
+      <ProductList products={products} />
     </>
   );
 };
